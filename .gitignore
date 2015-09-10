@@ -1,1 +1,4 @@
 node_modules/
+demo/build/
+demo/node_modules/
+demo/src/jspm_packages/

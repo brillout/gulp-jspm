@@ -1,14 +1,21 @@
 {
   "name": "gulp-jspm",
-  "version": "0.0.1-test",
-  "description": "Build JSPM assests with gulp",
+  "version": "0.1.1",
+  "description": "gulp plugin to build assets loaded with jspm/SystemJS",
   "main": "index.js",
   "dependencies": {
     "bluebird": "^2.10.0",
+    "gulp-util": "^3.0.6",
+    "jspm": "^0.16.2",
     "liftoff": "^2.1.0",
     "mini-assert": "^1.0.7",
     "temp": "^0.8.3",
     "through2": "^2.0.0",
     "vinyl": "^0.5.3"
-  }
+  },
+  "keywords": [
+    "gulpplugin",
+    "jspm",
+    "systemjs"
+  ]
 }
