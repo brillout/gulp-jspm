@@ -17,5 +17,6 @@
     "gulpplugin",
     "jspm",
     "systemjs"
-  ]
+  ],
+  "repository": "github:brillout/gulp-jspm"
 }
