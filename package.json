@@ -1,0 +1,14 @@
+{
+  "name": "gulp-jspm",
+  "version": "0.0.1-test",
+  "description": "Build JSPM assests with gulp",
+  "main": "index.js",
+  "dependencies": {
+    "bluebird": "^2.10.0",
+    "liftoff": "^2.1.0",
+    "mini-assert": "^1.0.7",
+    "temp": "^0.8.3",
+    "through2": "^2.0.0",
+    "vinyl": "^0.5.3"
+  }
+}
