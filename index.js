@@ -52,11 +52,14 @@ module.exports = function(){
             return contents;
         })
         .then(function(contents){
-            return new File({
-                base: file.base,
-                path: path.join(path.dirname(file.path), 'jspm-bundle.js'),
-                contents: contents
-            });
+            var bundle_file =
+                new File({
+                    base: file.base,
+                    path: path.join(path.dirname(file.path), 'jspm-bundle.js'),
+                    contents: contents
+                });
+            bundle_file.original_entry_point = file;
+            return bundle_file;
         })
         .then(function(bundle_file){
             push(bundle_file);
