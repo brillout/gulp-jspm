@@ -62,8 +62,11 @@ module.exports = function(){
             return bundle_file;
         })
         .then(function(bundle_file){
-            push(bundle_file);
-            cb();
+            // timeout to stop Promise to catch errors
+            setTimeout(function(){
+                push(bundle_file);
+                cb();
+            },0);
         });
     });
 };
