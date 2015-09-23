@@ -24,6 +24,8 @@ module.exports = function(){
             return;
         }
 
+        var enable_source_map = !!file.sourceMap;
+
         var push = this.push.bind(this);
 
         Promise.resolve()
@@ -38,27 +40,70 @@ module.exports = function(){
                 jspm.bundle(
                     file.path ,
                     tmp_file.path ,
-                    {} )
+                    {sourceMaps: enable_source_map} )
                 .then(function(){
                     return tmp_file.path;
                 })
             );
         })
-        .then(function(tmp_file_path){
-            return fs.readFileAsync(tmp_file_path);
+        .then(function(temp_path){
+            var results = {
+                temp_path: temp_path
+            };
+            return Promise.all(
+                [
+                    fs.readFileAsync(temp_path)
+                    .then(function(file_content){
+                        if( enable_source_map ) {
+                            var reSourceMapComment = /\n\/\/# sourceMappingURL=.+?$/;
+                            results.contents = new Buffer(file_content.toString().replace(reSourceMapComment,''));
+                        }
+                        else {
+                            results.contents = file_content;
+                        }
+                    })
+                ].concat(
+                    ! enable_source_map ? [] : (
+                        fs.readFileAsync(temp_path+'.map')
+                        .then(function(file_content){
+                            results.sourceMap = JSON.parse(file_content.toString());
+                        })
+                    )
+                )
+            )
+            .then(function(){
+                return results;
+            });
         })
-        .then(function(contents){
+        .then(function(results){
             temp.cleanup();
-            return contents;
+            return results;
         })
-        .then(function(contents){
+        .then(function(results){
             var bundle_file =
                 new File({
                     base: file.base,
                     path: path.join(path.dirname(file.path), 'jspm-bundle.js'),
-                    contents: contents
+                    contents: results.contents
                 });
+
             bundle_file.original_entry_point = file;
+
+            if( enable_source_map ) {
+                bundle_file.sourceMap = results.sourceMap;
+                bundle_file.sourceMap.file = bundle_file.relative;
+                bundle_file.sourceMap.sources =
+                    bundle_file.sourceMap.sources.map(function(relative_to_temp){
+                        return (
+                            path.relative(
+                                file.base,
+                                path.resolve(
+                                    path.dirname(results.temp_path),
+                                    relative_to_temp))
+                        );
+                    });
+            }
+
             return bundle_file;
         })
         .then(function(bundle_file){
