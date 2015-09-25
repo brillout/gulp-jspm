@@ -42,7 +42,7 @@ gulp.src('src/main.js')
     }));
 ```
 
-##### jspm bunlde arithmetics
+###### jspm bunlde arithmetics
 
 ```js
 gulp.src('src/main.js')
