@@ -42,6 +42,14 @@ gulp.src('src/main.js')
     }));
 ```
 
+##### jspm bunlde arithmetics
+
+```js
+gulp.src('src/main.js')
+    .pipe(gulp_jspm('- message')) // excludes message.js from bundle
+    .pipe(gulp.dest('build/'));
+```
+
 ##### Run Gulpfile Demo
 
 To run the code snippets above execute following commands.

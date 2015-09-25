@@ -38,3 +38,10 @@ gulp.task('test', function(){
         });
     }
 });
+
+
+gulp.task('arithmetic', function(){
+    return gulp.src('src/main.js')
+        .pipe(gulp_jspm('- message'))
+        .pipe(gulp.dest('build/'));
+});
