@@ -56,7 +56,9 @@ To run the code snippets above execute following commands.
 
 ```js
 git clone git@github.com:brillout/gulp-jspm
-cd gulp-jspm/demo
+cd gulp-jspm/
+npm install
+cd demo/
 npm install
 npm install -g gulp
 gulp
