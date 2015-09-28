@@ -52,8 +52,8 @@ describe('gulp_jspm()', function() {
             stream
             .pipe(stream_assert.test(function(bundle_file) {
                 assert( bundle_file.contents );
-                assert( /System\.register.*message/.test( bundle_file.contents.toString() ) );
-                assert( /System\.register.*main.*message/.test( bundle_file.contents ) );
+                assert( /System\.register\("main.js".*message/.test( bundle_file.contents ) );
+                assert( /System\.register\("message.js"/.test( bundle_file.contents.toString() ) );
             }))
             .pipe(stream_assert.done(done));
     });
@@ -66,6 +66,17 @@ describe('gulp_jspm()', function() {
                 assert( bundle_file.sourceMap.sources );
                 assert( bundle_file.sourceMap.sources.indexOf( 'main.js' ) !== -1 );
                 assert( bundle_file.sourceMap.sources.indexOf( 'message.js' ) !== -1 );
+            }))
+            .pipe(stream_assert.done(done));
+    });
+
+    it("should support arithmetics", function(done){
+        gulp.src(script_path)
+            .pipe(gulp_jspm({arithmetic:'   - message  '}))
+            .pipe(stream_assert.test(function(bundle_file) {
+                assert( bundle_file.contents );
+                assert( /System\.register\("main.js".*message/.test( bundle_file.contents ) );
+                assert( ! /System\.register\("message.js"/.test( bundle_file.contents.toString() ) );
             }))
             .pipe(stream_assert.done(done));
     });

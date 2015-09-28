@@ -42,6 +42,6 @@ gulp.task('test', function(){
 
 gulp.task('arithmetic', function(){
     return gulp.src('src/main.js')
-        .pipe(gulp_jspm('- message')) // excludes message.js from bundle
+        .pipe(gulp_jspm({arithmetic:'- message'})) // excludes message.js from bundle
         .pipe(gulp.dest('build/'));
 });

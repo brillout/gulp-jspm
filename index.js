@@ -12,7 +12,9 @@ var path = require('path');
 
 var projectName = require('./package.json').name;
 
-module.exports = function(arithmetic){
+module.exports = function(opts){
+    opts = opts || {};
+
     return through.obj(function(file, enc, cb){
         if( file.isNull() ){
             cb();
@@ -38,7 +40,7 @@ module.exports = function(arithmetic){
         .then(function(tmp_file){
             return (
                 jspm.bundle(
-                    file.path + (arithmetic?' '+arithmetic:'') ,
+                    file.path + (opts.arithmetic?' '+opts.arithmetic.trim():'') ,
                     tmp_file.path ,
                     {sourceMaps: enable_source_map} )
                 .then(function(){
