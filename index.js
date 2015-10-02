@@ -89,7 +89,7 @@ module.exports = function(opts){
                     contents: results.contents
                 });
 
-            bundle_file.original_entry_point = file;
+            bundle_file.originalEntryPoint = file;
 
             if( enable_source_map ) {
                 bundle_file.sourceMap = results.sourceMap;
