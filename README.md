@@ -46,7 +46,15 @@ gulp.src('src/main.js')
 
 ```js
 gulp.src('src/main.js')
-    .pipe(gulp_jspm({arithmetic:'- message'})) // excludes message.js from bundle
+    .pipe(gulp_jspm({arithmetic: '- message'})) // excludes message.js from bundle
+    .pipe(gulp.dest('build/'));
+```
+
+##### Self Executing Bundle
+
+```js
+gulp.src('src/main.js')
+    .pipe(gulp_jspm({selfExecutingBundle: true})) // corresponds to `jspm bundle-sfx main`
     .pipe(gulp.dest('build/'));
 ```
 
