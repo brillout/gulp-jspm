@@ -39,7 +39,7 @@ module.exports = function(opts){
         })
         .then(function(tmp_file){
             return (
-                jspm.bundle(
+                jspm[opts.selfExecutingBundle?'bundleSFX':'bundle'](
                     file.path + (opts.arithmetic?' '+opts.arithmetic.trim():'') ,
                     tmp_file.path ,
                     {sourceMaps: enable_source_map} )
