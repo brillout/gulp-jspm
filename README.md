@@ -50,7 +50,7 @@ gulp.src('src/main.js')
     .pipe(gulp.dest('build/'));
 ```
 
-##### Self Executing Bundle
+###### Self Executing Bundle
 
 ```js
 gulp.src('src/main.js')
