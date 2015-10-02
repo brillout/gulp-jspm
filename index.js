@@ -28,6 +28,8 @@ module.exports = function(opts){
 
         var enable_source_map = !!file.sourceMap;
 
+        var originalFileName = path.basename(file.path);
+
         var push = this.push.bind(this);
 
         Promise.resolve()
@@ -85,7 +87,7 @@ module.exports = function(opts){
             var bundle_file =
                 new File({
                     base: file.base,
-                    path: path.join(path.dirname(file.path), 'jspm-bundle.js'),
+                    path: path.join(path.dirname(file.path), (opts.preserveFileName?originalFileName:'jspm-bundle.js')),
                     contents: results.contents
                 });
 
