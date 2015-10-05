@@ -26,7 +26,7 @@ gulp.task('test', function(){
     return gulp.src('src/main.js')
         .pipe(gulp_jspm())
         .pipe(pass(function(vinyl_file){
-            assert( vinyl_file.relative === 'jspm-bundle.js' );
+            assert( vinyl_file.relative === 'main.bundle.js' );
             assert( vinyl_file.originalEntryPoint.relative === 'main.js' );
         }));
 

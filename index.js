@@ -84,8 +84,14 @@ module.exports = function(opts){
         .then(function(results){
             var bundle_file =
                 new File({
-                    base: file.base,
-                    path: path.join(path.dirname(file.path), 'jspm-bundle.js'),
+                    base: file.base ,
+                    path: (function(){
+                        var basename = path.basename(file.path);
+                        basename = basename.split('.');
+                        basename.splice(1, 0, 'bundle');
+                        basename = basename.join('.');
+                        return path.join(path.dirname(file.path), basename);
+                    })() ,
                     contents: results.contents
                 });
 

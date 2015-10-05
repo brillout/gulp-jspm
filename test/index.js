@@ -70,6 +70,15 @@ describe('gulp_jspm()', function() {
             .pipe(stream_assert.done(done));
     });
 
+    it("should prepend `.bundle` to filename extension", function(done){
+        stream =
+            stream
+            .pipe(stream_assert.test(function(bundle_file) {
+                assert( bundle_file.relative === 'main.bundle.js' );
+            }))
+            .pipe(stream_assert.done(done));
+    });
+
     it("should support arithmetics", function(done){
         gulp.src(script_path)
             .pipe(gulp_jspm({arithmetic:'   - message  '}))
