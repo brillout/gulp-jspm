@@ -68,7 +68,9 @@ cd gulp-jspm/
 npm install
 cd demo/
 npm install
+npm install -g jspm
 npm install -g gulp
+jspm install
 gulp
 gulp sourcemap
 gulp test
