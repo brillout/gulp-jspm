@@ -42,7 +42,15 @@ module.exports = function(opts){
                 jspm[opts.selfExecutingBundle?'bundleSFX':'bundle'](
                     file.path + (opts.arithmetic?' '+opts.arithmetic.trim():'') ,
                     tmp_file.path ,
-                    {sourceMaps: enable_source_map} )
+                    (function(){
+                        var jspm_opts = {};
+                        for(var i in opts) jspm_opts[i] = opts[i];
+                        jspm_opts.sourceMaps = jspm_opts.sourceMaps || enable_source_map;
+                        delete jspm_opts.arithmetic;
+                        delete jspm_opts.selfExecutingBundle;
+                        return jspm_opts;
+                    })()
+                )
                 .then(function(){
                     return tmp_file.path;
                 })
