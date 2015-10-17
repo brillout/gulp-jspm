@@ -58,7 +58,7 @@ gulp.src('src/main.js')
     .pipe(gulp.dest('build/'));
 ```
 
-##### jspm bundle options
+###### jspm bundle options
 
 the options given to gulp-jspm are passed on to jspm, e.g.
 ```js
@@ -67,7 +67,7 @@ gulp.src('src/main.js')
     .pipe(gulp.dest('build/'));
 ```
 
-##### Run Gulpfile Demo
+### Run Gulpfile Demo
 
 To run the code snippets above execute following commands.
 
