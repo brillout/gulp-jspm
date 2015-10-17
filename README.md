@@ -42,7 +42,7 @@ gulp.src('src/main.js')
     }));
 ```
 
-###### jspm bunlde arithmetics
+###### jspm bundle arithmetics
 
 ```js
 gulp.src('src/main.js')
@@ -55,6 +55,15 @@ gulp.src('src/main.js')
 ```js
 gulp.src('src/main.js')
     .pipe(gulp_jspm({selfExecutingBundle: true})) // `jspm bundle-sfx main`
+    .pipe(gulp.dest('build/'));
+```
+
+##### jspm bundle options
+
+the options given to gulp-jspm are passed on to jspm, e.g.
+```js
+gulp.src('src/main.js')
+    .pipe(gulp_jspm({inject: true})) // `jspm bundle main --inject`
     .pipe(gulp.dest('build/'));
 ```
 
