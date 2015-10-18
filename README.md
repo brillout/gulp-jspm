@@ -2,7 +2,7 @@
 
 ### Usage
 
-The following code snippets are implemented at [demo/gulpfile.js](demo/gulpfile.js).
+Some of the following code snippets are implemented at [demo/gulpfile.js](demo/gulpfile.js).
 
 ```js
 var gulp = require('gulp');
@@ -42,26 +42,25 @@ gulp.src('src/main.js')
     }));
 ```
 
-###### jspm bundle arithmetics
+###### Options
 
 ```js
 gulp.src('src/main.js')
-    .pipe(gulp_jspm({arithmetic: '- message'})) // excludes message.js from bundle
+    .pipe(gulp_jspm({arithmetic: '- message'})) // exclude message.js from bundle
     .pipe(gulp.dest('build/'));
-```
 
-###### Self Executing Bundle
-
-```js
 gulp.src('src/main.js')
     .pipe(gulp_jspm({selfExecutingBundle: true})) // `jspm bundle-sfx main`
     .pipe(gulp.dest('build/'));
-```
 
-###### jspm bundle options
+gulp.src('src/main.jsx')
+    .pipe(gulp_jspm({plugin: true})) // `jspm bundle main.jsx!`
+    .pipe(gulp.dest('build/'));
+gulp.src('src/main.jsx')
+    .pipe(gulp_jspm({plugin: 'jsx'})) // `jspm bundle main.jsx!jsx`
+    .pipe(gulp.dest('build/'));
 
-the options given to gulp-jspm are passed on to jspm, e.g.
-```js
+// all other options given to gulp-jspm are passed on to jspm, e.g.
 gulp.src('src/main.js')
     .pipe(gulp_jspm({inject: true})) // `jspm bundle main --inject`
     .pipe(gulp.dest('build/'));
