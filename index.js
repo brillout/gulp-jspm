@@ -41,7 +41,7 @@ module.exports = function(opts){
             return (
                 jspm[opts.selfExecutingBundle?'bundleSFX':'bundle'](
                     (function(){
-                        var jspm_input = file.path;
+                        var jspm_input = file.relative;
                         if( opts.plugin ) {
                             jspm_input += '!';
                             if( opts.plugin.constructor === String ) {
