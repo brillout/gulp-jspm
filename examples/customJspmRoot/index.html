@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+    <body>
+
+        <script src="src/jspm_packages/system.src.js"></script>
+        <script src="src/config.js"></script>
+
+        <!-- Uncomment this for arithmetic
+        <script type="text/javascript">
+
+            System.register('utils/sayHello.js', [], function (_export) {
+                'use strict';
+
+                return {
+                    setters: [],
+                    execute: function () {
+                        _export('default', function (name) {
+
+                            var message = 'Hello, ' + name + '!';
+
+                            document.body.innerHTML = '<div id="message">' + message + '</div>';
+                            console.log(message);
+
+                        });
+                    }
+                };
+            });
+
+        </script>
+        -->
+        <script type="text/javascript" src="build/main.bundle.js"></script>
+        <script type="text/javascript">
+
+            System.import('main.js');
+
+            if(!document.getElementById('message')) {
+                document.write('Error: If you did an arithmetic build, you need to uncomment the inline script in index.html');
+            }
+
+        </script>
+
+    </body>
+</html>
