@@ -34,14 +34,14 @@ module.exports = function(opts){
         .then(function(){
             return set_jspm_package_path(file.base);
         })
-        .then(function(){
-            return Promise.promisify(temp.open)('gulp-jspm__build.js');
+        .then(function(jspmRoot){
+            return [Promise.promisify(temp.open)('gulp-jspm__build.js'), Promise.resolve(jspmRoot)];
         })
-        .then(function(tmp_file){
+        .spread(function(tmp_file, jspmRoot){
             return (
                 jspm[opts.selfExecutingBundle?'bundleSFX':'bundle'](
                     (function(){
-                        var jspm_input = file.relative;
+                        var jspm_input = path.relative(jspmRoot, file.path);
                         if( opts.plugin ) {
                             jspm_input += '!';
                             if( opts.plugin.constructor === String ) {
@@ -157,10 +157,18 @@ function set_jspm_package_path(directory){
         .launch({
             cwd: directory
         }, function(env) {
+
             if( env.configBase ) {
                 jspm.setPackagePath(env.configBase);
             }
-            resolve();
+
+            var packageJSON = require(env.configPath);
+            if (packageJSON && packageJSON.jspm && packageJSON.jspm.directories) {
+                resolve(path.join(env.configBase, packageJSON.jspm.directories.baseURL));
+            } else {
+                resolve(env.configBase);
+            }
+
         });
     })
 }
