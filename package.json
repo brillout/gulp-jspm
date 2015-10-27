@@ -19,6 +19,9 @@
     "istanbul": "^0.3.2",
     "mocha": "^2.0.1"
   },
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha"
+  },
   "keywords": [
     "gulpplugin",
     "jspm",
