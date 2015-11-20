@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <body>
+        <!-- Uncomment this for arithmetic
+        <script type="text/javascript">
+
+            window.SAY_HELLO = function (name) {
+
+                var message = "Hello, " + name + "!";
+
+                document.body.innerHTML = '<div id="message">' + message + '</div>';
+                console.log(message);
+
+                return message;
+
+            };
+
+        </script>
+        -->
+        <script type="text/javascript" src="build/main.bundle.js"></script>
+        <script type="text/javascript">
+
+            if(!document.getElementById('message')) {
+                document.write('Error: If you did an arithmetic build, you need to uncomment the inline script in index.html');
+            }
+
+        </script>
+
+    </body>
+</html>

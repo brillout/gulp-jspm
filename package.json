@@ -1,26 +1,23 @@
 {
   "name": "gulp-jspm",
-  "version": "0.5.4",
+  "version": "1.0.0",
   "description": "gulp plugin to build assets loaded with jspm/SystemJS",
   "main": "index.js",
   "dependencies": {
-    "bluebird": "^2.10.0",
+    "bluebird": "^3.0.5",
     "gulp-util": "^3.0.6",
-    "jspm": "^0.16.2",
+    "jspm": "^0.16.14",
     "liftoff": "^2.1.0",
-    "mini-assert": "^1.0.7",
-    "temp": "^0.8.3",
     "through2": "^2.0.0",
     "vinyl": "^0.5.3"
   },
   "devDependencies": {
-    "better-assert": "^1.0.2",
-    "gulp": "^3.8.7",
-    "istanbul": "^0.3.2",
-    "mocha": "^2.0.1"
+    "gulp": "^3.9.0",
+    "istanbul": "^0.4.0",
+    "jasmine": "^2.3.2"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "istanbul cover --config=./spec/support/istanbul.json jasmine"
   },
   "keywords": [
     "gulpplugin",

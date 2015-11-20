@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "postinstall": "jspm install"
+  },
+  "devDependencies": {
+    "del": "^2.0.2",
+    "gulp": "^3.9.0"
+  },
+  "jspm": {
+    "dependencies": {
+      "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
+      "react": "npm:react@^0.14.2",
+      "react-dom": "npm:react-dom@^0.14.2"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  }
+}
