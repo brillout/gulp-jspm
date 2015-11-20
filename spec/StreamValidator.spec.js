@@ -306,7 +306,7 @@ describe('StreamValidator', function () {
                 // then
                 expect(pushed.length).toBe(1);
                 expect(pushed[0]).toBe(file);
-            })
+            });
 
             it('if file is NOT null AND NOT stream AND NOT buffer, emit error', function () {
 
