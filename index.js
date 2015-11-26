@@ -160,15 +160,15 @@ function set_jspm_package_path(directory){
 
             if( env.configBase ) {
                 jspm.setPackagePath(env.configBase);
+
+                var packageJSON = require(env.configPath);
+                if (packageJSON && packageJSON.jspm && packageJSON.jspm.directories && packageJSON.jspm.directories.baseURL) {
+                    resolve(path.join(env.configBase, packageJSON.jspm.directories.baseURL));
+                    return;
+                }
             }
 
-            var packageJSON = require(env.configPath);
-            if (packageJSON && packageJSON.jspm && packageJSON.jspm.directories) {
-                resolve(path.join(env.configBase, packageJSON.jspm.directories.baseURL));
-            } else {
-                resolve(env.configBase);
-            }
-
+            resolve(env.configBase);
         });
     })
 }
