@@ -57,7 +57,12 @@ module.exports = function(opts){
                     (function(){
                         var jspm_opts = {};
                         for(var i in opts) jspm_opts[i] = opts[i];
+
+                        jspm_opts.minify = jspm_opts.minify || false;
+                        jspm_opts.mangle = jspm_opts.mangle || false;
+                        jspm_opts.lowResSourceMaps = jspm_opts.lowResSourceMaps || false;
                         jspm_opts.sourceMaps = jspm_opts.sourceMaps || enable_source_map;
+
                         delete jspm_opts.plugin;
                         delete jspm_opts.arithmetic;
                         delete jspm_opts.selfExecutingBundle;
