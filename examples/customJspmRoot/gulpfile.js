@@ -7,10 +7,11 @@ var gulp = require('gulp'),
  */
 gulp.task('default', ['clean'], function () {
 
-    var targetPath = 'main.bundle.js';
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.js';
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle(targetPath))
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath))
         .pipe(gulp.dest('build/'));
 
 });
@@ -23,11 +24,12 @@ gulp.task('default', ['clean'], function () {
 gulp.task('arithmetic', ['clean'], function () {
 
     var expression = '- utils/sayHello.js',
+        entryPath = 'src/main.js',
         targetPath = 'main.bundle.js';
 
-    gulp.src('src/main.js')
+    gulp.src('src/**/*.js')
         .pipe(jspm.arithmetic(expression))
-        .pipe(jspm.bundle(targetPath))
+        .pipe(jspm.bundle(entryPath, targetPath))
         .pipe(gulp.dest('build/'));
 
 });
@@ -37,10 +39,11 @@ gulp.task('arithmetic', ['clean'], function () {
  */
 gulp.task('arithmetic:alt', ['clean'], function () {
 
-    var targetPath = 'main.bundle.js - utils/sayHello.js';
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.js - utils/sayHello.js';
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle(targetPath))
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath))
         .pipe(gulp.dest('build/'));
 
 });
@@ -50,13 +53,14 @@ gulp.task('arithmetic:alt', ['clean'], function () {
  */
 gulp.task('minify', ['clean'], function () {
 
-    var targetPath = 'main.bundle.min.js',
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.min.js',
         builderConfig = {
             minify: true
         };
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle(targetPath, builderConfig))
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath, builderConfig))
         .pipe(gulp.dest('build/'));
 
 });
@@ -73,13 +77,14 @@ gulp.task('minify', ['clean'], function () {
  */
 gulp.task('sourceMap', ['clean'], function () {
 
-    var targetPath = 'main.bundle.js',
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.js',
         builderConfig = {
             sourceMaps: true
         };
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle(targetPath, builderConfig))
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath, builderConfig))
         .pipe(gulp.dest('build/'));
 
 });
@@ -95,13 +100,14 @@ gulp.task('sourceMap', ['clean'], function () {
  */
 gulp.task('sourceMap:relative', ['clean'], function () {
 
-    var targetPath = 'build/main.bundle.js',
+    var entryPath = 'src/main.js',
+        targetPath = 'build/main.bundle.js',
         builderConfig = {
             sourceMaps: true
         };
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle(targetPath, builderConfig))
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath, builderConfig))
         .pipe(gulp.dest('.'));
 
 });
@@ -112,8 +118,11 @@ gulp.task('sourceMap:relative', ['clean'], function () {
  */
 gulp.task('sourceMap:contents', ['clean'], function () {
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle('main.bundle.js', {
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.js';
+
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath, {
             sourceMaps: true,
             sourceMapContents: true
         }))
@@ -130,8 +139,11 @@ gulp.task('sourceMap:contents', ['clean'], function () {
  */
 gulp.task('sourceMap:inline', ['clean'], function () {
 
-    gulp.src('src/main.js')
-        .pipe(jspm.bundle('main.bundle.js', {
+    var entryPath = 'src/main.js',
+        targetPath = 'main.bundle.js';
+
+    gulp.src('src/**/*.js')
+        .pipe(jspm.bundle(entryPath, targetPath, {
             sourceMaps: 'inline'
         }))
         .pipe(gulp.dest('build/'));
