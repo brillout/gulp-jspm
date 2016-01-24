@@ -9,6 +9,7 @@ describe('Bundler', function () {
 
     beforeEach(function () {
 
+        this.entryPath = '/src/entryFile.js';
         this.bundleName = 'bundle.js';
 
         this.entryFile = new File({
@@ -654,7 +655,7 @@ describe('Bundler', function () {
 
     });
 
-    describe('.bundle(entryFile, targetPath, builderConfig, sfx)', function () {
+    describe('.bundle(entryPath, targetPath, builderConfig, fileCache, sfx)', function () {
 
         it('should return a Promise, resolved with bundleFiles', function (done) {
 
@@ -675,6 +676,8 @@ describe('Bundler', function () {
                 targetPath = this.bundleName,
                 result;
 
+            spyOn(bundler, '_fetchEntryFile').and.returnValue(this.entryFile);
+
             spyOn(bundler, '_configureJspm').and.returnValue(Promise.resolve(configPaths));
 
             spyOn(bundler, '_createBundle').and.returnValue(function () {
@@ -686,7 +689,7 @@ describe('Bundler', function () {
             });
 
             // when
-            result = bundler.bundle(this.entryFile, targetPath);
+            result = bundler.bundle(this.entryPath, targetPath);
 
             // then
             result.then(function (_bundleFiles) {
@@ -714,6 +717,8 @@ describe('Bundler', function () {
 
                 targetPath = this.bundleName;
 
+            spyOn(bundler, '_fetchEntryFile').and.returnValue(this.entryFile);
+
             spyOn(bundler, '_configureJspm').and.returnValue(Promise.resolve(configPaths));
 
             spyOn(bundler, '_createBundle').and.returnValue(function () {
@@ -725,7 +730,7 @@ describe('Bundler', function () {
             });
 
             // when
-            bundler.bundle(this.entryFile, targetPath);
+            bundler.bundle(this.entryPath, targetPath);
 
             // then
             expect(bundler._configureJspm).toHaveBeenCalledWith(this.entryFile);
@@ -753,7 +758,10 @@ describe('Bundler', function () {
                 builderConfig = {
 
                 },
+                fileCache = [],
                 sfx = false;
+
+            spyOn(bundler, '_fetchEntryFile').and.returnValue(this.entryFile);
 
             spyOn(bundler, '_configureJspm').and.returnValue(Promise.resolve(configPaths));
 
@@ -766,7 +774,7 @@ describe('Bundler', function () {
             });
 
             // when
-            bundler.bundle(this.entryFile, targetPath, builderConfig, sfx);
+            bundler.bundle(this.entryPath, targetPath, builderConfig, fileCache, sfx);
 
             // then
             expect(bundler._createBundle).toHaveBeenCalledWith(this.entryFile, builderConfig, sfx);
@@ -791,6 +799,8 @@ describe('Bundler', function () {
 
                 targetPath = this.bundleName;
 
+            spyOn(bundler, '_fetchEntryFile').and.returnValue(this.entryFile);
+
             spyOn(bundler, '_configureJspm').and.returnValue(Promise.resolve(configPaths));
 
             spyOn(bundler, '_createBundle').and.returnValue(function () {
@@ -802,7 +812,7 @@ describe('Bundler', function () {
             });
 
             // when
-            bundler.bundle(this.entryFile, targetPath);
+            bundler.bundle(this.entryPath, targetPath);
 
             // then
             expect(bundler._processSourceMap).toHaveBeenCalledWith(this.entryFile, targetPath);

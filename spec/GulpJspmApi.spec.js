@@ -162,7 +162,7 @@ describe('GulpJspmApi', function () {
 
     });
 
-    describe('.buildStatic(targetPath, builderConfig)', function () {
+    describe('.buildStatic(entryPath, targetPath, builderConfig)', function () {
 
         it('should return streamValidator.withObjectStream', function () {
 
@@ -177,10 +177,25 @@ describe('GulpJspmApi', function () {
             streamValidator.withObjectStream.and.returnValue('withObjectStream');
 
             // when
-            result = gulpJspmApi.buildStatic('main.bundle.js');
+            result = gulpJspmApi.buildStatic('/src/main.js', 'main.bundle.js');
 
             // then
             expect(result).toBe('withObjectStream');
+
+        });
+
+        it('should throw error if entryPath == undefined', function () {
+
+            // given
+            var bundler = jasmine.createSpy('bundler'),
+                streamValidator = jasmine.createSpyObj('streamValidator', ['withObjectStream']),
+
+                gulpJspmApi = new GulpJspmApi(bundler, streamValidator);
+
+            streamValidator.withObjectStream.and.returnValue('withObjectStream');
+
+            // expect
+            expect(gulpJspmApi.buildStatic).toThrowError('entryPath param is required.');
 
         });
 
@@ -195,11 +210,13 @@ describe('GulpJspmApi', function () {
             streamValidator.withObjectStream.and.returnValue('withObjectStream');
 
             // expect
-            expect(gulpJspmApi.buildStatic).toThrowError('targetPath param is required.');
+            expect(function () {
+                gulpJspmApi.buildStatic('/src/main.js')
+            }).toThrowError('targetPath param is required.');
 
         });
 
-        it('withObjectStream should call bundler.bundle(entryFile, targetPath, builderConfig, true)', function () {
+        it('withObjectStream flushFn should call bundler.bundle(entryPath, targetPath, builderConfig, streamCache, true)', function () {
 
             // given
             var bundler = jasmine.createSpyObj('bundler', ['bundle']),
@@ -207,11 +224,9 @@ describe('GulpJspmApi', function () {
 
                 gulpJspmApi = new GulpJspmApi(bundler, streamValidator),
 
-                withObjectStream,
+                flushFn,
 
-                entryFile = {
-                    jspm: {}
-                },
+                entryPath = '/src/main.js',
                 targetPath = 'main.bundle.js',
                 builderConfig = {
                     config: true
@@ -221,21 +236,21 @@ describe('GulpJspmApi', function () {
                 then: function () {}
             });
 
-            streamValidator.withObjectStream.and.callFake(function (_withObjectStream) {
-                withObjectStream = _withObjectStream;
+            streamValidator.withObjectStream.and.callFake(function (_withObjectStream, _flushFn) {
+                flushFn = _flushFn;
             });
 
-            gulpJspmApi.buildStatic(targetPath, builderConfig);
+            gulpJspmApi.buildStatic(entryPath, targetPath, builderConfig);
 
             // when
-            withObjectStream(entryFile, 'utf8', function () {});
+            flushFn();
 
             // then
-            expect(bundler.bundle).toHaveBeenCalledWith(entryFile, targetPath, builderConfig, true);
+            expect(bundler.bundle).toHaveBeenCalledWith(entryPath, targetPath, builderConfig, jasmine.any(Array), true);
 
         });
 
-        it('withObjectStream should push file(s) back onto queue', function () {
+        it('withObjectStream flushFn should push file(s) back onto queue', function () {
 
             // given
             var bundler = jasmine.createSpyObj('bundler', ['bundle']),
@@ -243,11 +258,9 @@ describe('GulpJspmApi', function () {
 
                 gulpJspmApi = new GulpJspmApi(bundler, streamValidator),
 
-                withObjectStream,
+                flushFn,
 
-                entryFile = {
-                    jspm: {}
-                },
+                entryPath = '/src/main.js',
                 targetPath = 'main.bundle.js',
                 builderConfig = {
                     config: true
@@ -262,14 +275,14 @@ describe('GulpJspmApi', function () {
                 }
             });
 
-            streamValidator.withObjectStream.and.callFake(function (_withObjectStream) {
-                withObjectStream = _withObjectStream;
+            streamValidator.withObjectStream.and.callFake(function (_withObjectStream, _flushFn) {
+                flushFn = _flushFn;
             });
 
-            gulpJspmApi.buildStatic(targetPath, builderConfig);
+            gulpJspmApi.buildStatic(entryPath, targetPath, builderConfig);
 
             // when
-            withObjectStream(entryFile, 'utf8', pushFn);
+            flushFn.apply({ push: pushFn }, [function () {}]);
 
             // then
             expect(pushFn).toHaveBeenCalledWith(bundleFiles);
@@ -278,7 +291,7 @@ describe('GulpJspmApi', function () {
 
     });
 
-    describe('.bundle(targetPath, builderConfig)', function () {
+    describe('.bundle(entryPath, targetPath, builderConfig)', function () {
 
         it('should return streamValidator.withObjectStream', function () {
 
@@ -293,10 +306,25 @@ describe('GulpJspmApi', function () {
             streamValidator.withObjectStream.and.returnValue('withObjectStream');
 
             // when
-            result = gulpJspmApi.bundle('main.bundle.js');
+            result = gulpJspmApi.bundle('/src/main.js', 'main.bundle.js');
 
             // then
             expect(result).toBe('withObjectStream');
+
+        });
+
+        it('should throw error if entryPath == undefined', function () {
+
+            // given
+            var bundler = jasmine.createSpy('bundler'),
+                streamValidator = jasmine.createSpyObj('streamValidator', ['withObjectStream']),
+
+                gulpJspmApi = new GulpJspmApi(bundler, streamValidator);
+
+            streamValidator.withObjectStream.and.returnValue('withObjectStream');
+
+            // expect
+            expect(gulpJspmApi.bundle).toThrowError('entryPath param is required.');
 
         });
 
@@ -311,11 +339,13 @@ describe('GulpJspmApi', function () {
             streamValidator.withObjectStream.and.returnValue('withObjectStream');
 
             // expect
-            expect(gulpJspmApi.bundle).toThrowError('targetPath param is required.');
+            expect(function () {
+                gulpJspmApi.bundle('/src/main.js')
+            }).toThrowError('targetPath param is required.');
 
         });
 
-        it('withObjectStream should call bundler.bundle(entryFile, targetPath, builderConfig)', function () {
+        it('withObjectStream flushFn should call bundler.bundle(entryFile, targetPath, builderConfig, streamCache)', function () {
 
             // given
             var bundler = jasmine.createSpyObj('bundler', ['bundle']),
@@ -323,11 +353,9 @@ describe('GulpJspmApi', function () {
 
                 gulpJspmApi = new GulpJspmApi(bundler, streamValidator),
 
-                withObjectStream,
+                flushFn,
 
-                entryFile = {
-                    jspm: {}
-                },
+                entryPath = '/src/main.js',
                 targetPath = 'main.bundle.js',
                 builderConfig = {
                     config: true
@@ -337,21 +365,21 @@ describe('GulpJspmApi', function () {
                 then: function () {}
             });
 
-            streamValidator.withObjectStream.and.callFake(function (_withObjectStream) {
-                withObjectStream = _withObjectStream;
+            streamValidator.withObjectStream.and.callFake(function (_withObjectStream, _flushFn) {
+                flushFn = _flushFn;
             });
 
-            gulpJspmApi.bundle(targetPath, builderConfig);
+            gulpJspmApi.bundle(entryPath, targetPath, builderConfig);
 
             // when
-            withObjectStream(entryFile, 'utf8', function () {});
+            flushFn();
 
             // then
-            expect(bundler.bundle).toHaveBeenCalledWith(entryFile, targetPath, builderConfig);
+            expect(bundler.bundle).toHaveBeenCalledWith(entryPath, targetPath, builderConfig, jasmine.any(Array));
 
         });
 
-        it('withObjectStream should push file(s) back onto queue', function () {
+        it('withObjectStream flushFn should push file(s) back onto queue', function () {
 
             // given
             var bundler = jasmine.createSpyObj('bundler', ['bundle']),
@@ -359,11 +387,9 @@ describe('GulpJspmApi', function () {
 
                 gulpJspmApi = new GulpJspmApi(bundler, streamValidator),
 
-                withObjectStream,
+                flushFn,
 
-                entryFile = {
-                    jspm: {}
-                },
+                entryPath = '/src/main.js',
                 targetPath = 'main.bundle.js',
                 builderConfig = {
                     config: true
@@ -378,14 +404,14 @@ describe('GulpJspmApi', function () {
                 }
             });
 
-            streamValidator.withObjectStream.and.callFake(function (_withObjectStream) {
-                withObjectStream = _withObjectStream;
+            streamValidator.withObjectStream.and.callFake(function (_withObjectStream, _flushFn) {
+                flushFn = _flushFn
             });
 
-            gulpJspmApi.bundle(targetPath, builderConfig);
+            gulpJspmApi.bundle(entryPath, targetPath, builderConfig);
 
             // when
-            withObjectStream(entryFile, 'utf8', pushFn);
+            flushFn.apply({ push: pushFn }, [function () {}]);
 
             // then
             expect(pushFn).toHaveBeenCalledWith(bundleFiles);
