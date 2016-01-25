@@ -4,6 +4,7 @@ var Liftoff = require('liftoff');
 var through = require('through2');
 var Promise = require('bluebird');
     Promise.longStackTraces();
+    Promise.config({cancellation: true});
 var temp = require('temp').track();
 var File = require('vinyl');
 var fs = Promise.promisifyAll(require("fs"));
@@ -30,7 +31,9 @@ module.exports = function(opts){
 
         var push = this.push.bind(this);
 
-        Promise.resolve()
+        var scope = this;
+
+        var jspm_promise = Promise.resolve()
         .then(function(){
             return set_jspm_package_path(file.base);
         })
@@ -66,6 +69,9 @@ module.exports = function(opts){
                 )
                 .then(function(){
                     return tmp_file.path;
+                }, function (error) {
+                    scope.emit('error', new gutil.PluginError(projectName, 'JSPM Bundle failing: \n' + error ));
+                    jspm_promise.cancel();
                 })
             );
         })
