@@ -43,10 +43,13 @@ module.exports = function(opts){
 
 function do_bundle(file, opts){
 
+    info_log.enable = !!opts.verbose;
+
     return Promise.resolve(
         {
             jspm: {
-                root: null,
+                baseURL: null,
+                package_path: null
             },
             bundle: {
                 path: null,
@@ -57,10 +60,18 @@ function do_bundle(file, opts){
         }
     )
     .then(function(infos){
+        info_log('start', infos);
+
         return (
-            set_jspm_package_path(file.base)
-        ).then(function(jspm_root){
-            infos.jspm.root = jspm_root;
+            get_paths(file.base)
+        ).then(function(paths){
+            jspm.setPackagePath(paths.package_path);
+
+            infos.jspm.package_path = paths.package_path;
+            infos.jspm.baseURL = paths.baseURL;
+
+            info_log('relevant paths retrieved', infos);
+
             return infos;
         });
     })
@@ -70,33 +81,30 @@ function do_bundle(file, opts){
         )
         .then(function(temp_file){
             infos.bundle.path = temp_file.path;
+
+            info_log('temporary file created', infos);
+
             return infos;
         });
     })
     .then(function(infos){
-        return (
-            jspm[opts.selfExecutingBundle?'bundleSFX':'bundle'](
-
-                // input
-                (function(){
-                    var jspm_input = path.relative(infos.jspm.root, file.path);
-                    if( opts.plugin ) {
-                        jspm_input += '!';
-                        if( opts.plugin.constructor === String ) {
-                            jspm_input += opts.plugin;
-                        }
+        var jspm_input = (function(){
+                var jspm_input = path.relative(infos.jspm.baseURL, file.path);
+                if( opts.plugin ) {
+                    jspm_input += '!';
+                    if( opts.plugin.constructor === String ) {
+                        jspm_input += opts.plugin;
                     }
-                    if( opts.arithmetic ) {
-                        jspm_input += ' ' + opts.arithmetic.trim();
-                    }
-                    return jspm_input;
-                })() ,
+                }
+                if( opts.arithmetic ) {
+                    jspm_input += ' ' + opts.arithmetic.trim();
+                }
+                return jspm_input;
+        })();
 
-                // output
-                infos.bundle.path ,
+        var jspm_output = infos.bundle.path;
 
-                // options
-                (function(){
+        var jspm_opts = (function(){
                     var jspm_opts = {};
                     for(var i in opts) jspm_opts[i] = opts[i];
                     jspm_opts.sourceMaps = jspm_opts.sourceMaps || file.sourceMap;
@@ -104,12 +112,20 @@ function do_bundle(file, opts){
                     delete jspm_opts.arithmetic;
                     delete jspm_opts.selfExecutingBundle;
                     return jspm_opts;
-                })()
-            )
-            .then(function(){
-                return infos;
-            })
-        );
+        })();
+
+        var method = opts.selfExecutingBundle?'bundleSFX':'bundle';
+
+        info_log('calling `jspm.'+method+"('"+jspm_input+"','"+jspm_output+"',"+JSON.stringify(jspm_opts)+');`', infos);
+
+        return Promise.resolve(
+            jspm[method](jspm_input, jspm_output, jspm_opts)
+        )
+        .then(function(){
+            info_log('jspm.'+method+'() called', infos);
+
+            return infos;
+        });
     })
     .then(function(infos){
         return Promise.all(
@@ -135,8 +151,9 @@ function do_bundle(file, opts){
         )
         .then(function(){
             temp.cleanup();
-        })
-        .then(function(){
+
+            info_log('bundle content and potentially sourceMap content read from temporary file(s)', infos);
+
             return infos;
         });
     })
@@ -171,11 +188,13 @@ function do_bundle(file, opts){
                 });
         }
 
+        info_log('vinyl_file for stream created', infos);
+
         return infos;
     });
 }
 
-function set_jspm_package_path(directory){
+function get_paths(directory){
     return new Promise(function(resolve){
         new Liftoff({
             name: 'jspm',
@@ -188,17 +207,36 @@ function set_jspm_package_path(directory){
             cwd: directory
         }, function(env) {
 
-            if( env.configBase ) {
-                jspm.setPackagePath(env.configBase);
+            resolve({
+                baseURL: (function(){
+                    if( env.configBase ) {
+                        var package_info = require(env.configPath);
+                        if(
+                          package_info &&
+                          package_info.jspm &&
+                          package_info.jspm.directories &&
+                          package_info.jspm.directories.baseURL ) {
+                            var baseURL = package_info.jspm.directories.baseURL;
+                            return path.join(env.configBase, baseURL);
+                        }
+                    }
+                    return env.configBase;
+                })(),
+                package_path: env.configBase
+            });
 
-                var packageJSON = require(env.configPath);
-                if (packageJSON && packageJSON.jspm && packageJSON.jspm.directories && packageJSON.jspm.directories.baseURL) {
-                    resolve(path.join(env.configBase, packageJSON.jspm.directories.baseURL));
-                    return;
-                }
-            }
-
-            resolve(env.configBase);
         });
     })
+}
+
+function info_log(message, infos) {
+    if( info_log.enable ) {
+        console.log(
+            projectName + ':',
+            message + ',',
+            'collected information at this point;\n',
+            infos
+            //JSON.stringify(infos, null, 2)
+        );
+    }
 }
