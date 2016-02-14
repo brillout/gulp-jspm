@@ -31,22 +31,12 @@ gulp.src('src/main.js')
     .pipe(gulp.dest('build/'));
 ```
 
-###### Original Entry Point
-
-```js
-gulp.src('src/main.js')
-    .pipe(gulp_jspm())
-    .pipe(pass(function(vinyl_file){
-        assert( vinyl_file.relative === 'main.bundle.js' );
-        assert( vinyl_file.originalEntryPoint.relative === 'main.js' );
-    }));
-```
-
 ###### Options
 
 ```js
 gulp.src('src/main.js')
-    .pipe(gulp_jspm({arithmetic: '- message'})) // exclude message.js from bundle
+    // exclude message.js from bundle
+    .pipe(gulp_jspm({arithmetic: '- message'}))
     .pipe(gulp.dest('build/'));
 
 gulp.src('src/main.js')
@@ -60,10 +50,29 @@ gulp.src('src/main.jsx')
     .pipe(gulp_jspm({plugin: 'jsx'})) // `jspm bundle main.jsx!jsx`
     .pipe(gulp.dest('build/'));
 
-// all other options given to gulp-jspm are passed on to jspm, e.g.
+gulp.src('src/main.js')
+    // print information logs about `gulp-jspm` internal progress
+    .pipe(gulp_jspm({verbose: true}))
+    .pipe(gulp.dest('build/'));
+
+// All other options given to gulp-jspm are passed on to jspm.
+// All jspm options can therefore be passed to `gulp-jspm`
+// (`minify`, `mangle`, `lowResSourceMaps`, etc.).
+// For example:
 gulp.src('src/main.js')
     .pipe(gulp_jspm({inject: true})) // `jspm bundle main --inject`
     .pipe(gulp.dest('build/'));
+```
+
+###### Original Entry Point
+
+```js
+gulp.src('src/main.js')
+    .pipe(gulp_jspm())
+    .pipe(pass(function(vinyl_file){
+        assert( vinyl_file.relative === 'main.bundle.js' );
+        assert( vinyl_file.originalEntryPoint.relative === 'main.js' );
+    }));
 ```
 
 ### Run Gulpfile Demo
