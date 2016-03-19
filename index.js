@@ -26,6 +26,7 @@ module.exports = function(opts){
             return;
         }
 
+        var self = this;
         var push = this.push.bind(this);
         opts = opts || {};
         do_bundle(file, opts)
@@ -35,6 +36,12 @@ module.exports = function(opts){
                 push(infos.bundle.vinyl_file);
                 cb();
             },0);
+        })
+        .catch(function(error) {
+            setTimeout(function() {
+                self.emit('error', new gutil.PluginError(projectName, error));
+                cb();
+            }, 0);
         });
 
     });
@@ -226,7 +233,7 @@ function get_paths(directory){
             });
 
         });
-    })
+    });
 }
 
 function info_log(message, infos) {
