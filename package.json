@@ -6,7 +6,7 @@
   "dependencies": {
     "bluebird": "^3.0.5",
     "gulp-util": "^3.0.6",
-    "jspm": "tniswong/jspm-cli#builder-patch",
+    "jspm": "^0.16.33",
     "liftoff": "^2.1.0",
     "multimatch": "^2.1.0",
     "through2": "^2.0.0",
