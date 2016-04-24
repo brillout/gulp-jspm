@@ -10,6 +10,7 @@
     "liftoff": "^2.1.0",
     "multimatch": "^2.1.0",
     "through2": "^2.0.0",
+    "upath": "^0.1.7",
     "vinyl": "^0.5.3"
   },
   "devDependencies": {
