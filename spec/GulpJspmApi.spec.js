@@ -44,7 +44,7 @@ describe('GulpJspmApi', function () {
             gulpJspmApi.plugin('plugin');
 
             // when
-            withObjectStream(file, 'utf8', function () {});
+            withObjectStream.call({push: () => {}}, file, 'utf8', function () {});
 
             // then
             expect(file.jspm.plugin).toBe('plugin');
@@ -61,6 +61,7 @@ describe('GulpJspmApi', function () {
                 file = {
                     jspm: {}
                 },
+                flushFn = function () {},
 
                 pushFn = jasmine.createSpy('pushFn'),
 
@@ -73,7 +74,7 @@ describe('GulpJspmApi', function () {
             gulpJspmApi.plugin('plugin');
 
             // when
-            withObjectStream(file, 'utf8', pushFn);
+            withObjectStream.call({push: pushFn}, file, 'utf8', flushFn);
 
             // then
             expect(pushFn).toHaveBeenCalledWith(file);
@@ -124,7 +125,7 @@ describe('GulpJspmApi', function () {
             gulpJspmApi.arithmetic('- message');
 
             // when
-            withObjectStream(file, 'utf8', function () {});
+            withObjectStream.call({push: () => {}}, file, 'utf8', function () {});
 
             // then
             expect(file.jspm.arithmetic).toBe('- message');
@@ -141,6 +142,7 @@ describe('GulpJspmApi', function () {
                 file = {
                     jspm: {}
                 },
+                flushFn = function () {},
 
                 pushFn = jasmine.createSpy('pushFn'),
 
@@ -153,7 +155,7 @@ describe('GulpJspmApi', function () {
             gulpJspmApi.arithmetic('- message');
 
             // when
-            withObjectStream(file, 'utf8', pushFn);
+            withObjectStream.call({push: pushFn}, file, 'utf8', flushFn);
 
             // then
             expect(pushFn).toHaveBeenCalledWith(file);

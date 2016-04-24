@@ -378,7 +378,7 @@ describe('Bundler', function () {
 
             });
 
-            it('should return an array of: [builderResults, configPaths]', function (done) {
+            it('should return builderResults', function (done) {
 
                 // given
                 var entryPointCalculator = jasmine.createSpyObj('entryPointCalculator', ['calc']),
@@ -392,7 +392,7 @@ describe('Bundler', function () {
                         jspmRoot: '/jspm/root'
                     },
 
-                    results;
+                    result;
 
                 spyOn(bundler, '_fetchBuilder').and.callFake(function () {
                     return builder;
@@ -402,19 +402,14 @@ describe('Bundler', function () {
                 builder.bundle.and.returnValue(Promise.resolve(builderResults));
 
                 // when
-                results = bundler._createBundle(this.entryFile)(configPaths);
+                result = bundler._createBundle(this.entryFile)(configPaths);
 
                 // then
-                expect(Array.isArray(results)).toBeTruthy();
-                expect(results.length).toBe(2);
+                expect(result.then).toBeDefined();
 
-                expect(results[0].then).toBeDefined();
-                expect(results[1].then).toBeDefined();
-
-                Promise.resolve(results).spread(function (_builderResults, _configPaths) {
+                Promise.resolve(builderResults).then(function (_builderResults) {
 
                     expect(_builderResults).toBe(builderResults);
-                    expect(_configPaths).toBe(configPaths);
 
                     done();
 
@@ -456,15 +451,12 @@ describe('Bundler', function () {
                         sourceMap: false,
                         source: ""
                     },
-                    configPaths = {
-                        jspmRoot: '/jspm/root'
-                    },
 
                     targetPath = this.bundleName,
                     result;
 
                 // when
-                result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
+                result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
 
                 // then
                 expect(Array.isArray(result)).toBeTruthy();
@@ -475,7 +467,7 @@ describe('Bundler', function () {
 
             describe('if builderResults.sourceMap is truthy, ', function () {
 
-                it('should update sourceMap.file with bundleFile.basename', function () {
+                it('should update sourceMap.file with bundleFile.relative', function () {
 
                     // given
                     var bundler = new Bundler(),
@@ -484,16 +476,12 @@ describe('Bundler', function () {
                             sourceMap: '{"sources": []}',
                             source: ""
                         },
-                        configPaths = {
-                            configBase: '/jspm/root',
-                            jspmRoot: '/jspm/root'
-                        },
 
                         targetPath = this.bundleName,
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
+                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
@@ -506,91 +494,6 @@ describe('Bundler', function () {
 
                 });
 
-                it('should update sourceMap.sourceRoot with a path relative from targetPath to entryFile.base', function () {
-
-                    // given
-                    var bundler = new Bundler(),
-
-                        builderResults = {
-                            sourceMap: '{"sources": []}',
-                            source: ""
-                        },
-                        configPaths = {
-                            configBase: '/jspm/root',
-                            jspmRoot: '/jspm/root'
-                        },
-
-                        targetPath = this.bundleName,
-                        result;
-
-                    // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
-
-                    // then
-                    expect(Array.isArray(result)).toBeTruthy();
-                    expect(result.length).toBe(2);
-
-                    expect(result[1].path).toMatch(new RegExp(this.sourceMapFile.basename + "$"));
-                    expect(JSON.parse(result[1].contents.toString())).toEqual(jasmine.objectContaining({
-
-                        sourceRoot: path.relative(
-                            path.join(configPaths.configBase, path.dirname(targetPath)),
-                            this.entryFile.base
-                        )
-
-                    }));
-
-                });
-
-                it('should update sourceMap.sources to contain paths relative to sourceMap.sourceRoot', function () {
-
-                    // given
-                    var bundler = new Bundler(),
-
-                        builderResults = {
-                            sourceMap: '{"sources": ["/src/nest/entryFile.js"]}',
-                            source: ""
-                        },
-                        configPaths = {
-                            configBase: '/',
-                            jspmRoot: '/'
-                        },
-
-                        targetPath = 'build/' + this.bundleName,
-                        result;
-
-                    // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
-
-                    // then
-                    expect(Array.isArray(result)).toBeTruthy();
-                    expect(result.length).toBe(2);
-
-                    expect(result[1].path).toMatch(new RegExp(this.sourceMapFile.basename + "$"));
-                    expect(JSON.parse(result[1].contents)).toEqual(
-                        jasmine.objectContaining({
-
-                            sources: [
-
-                                // 'nest/entryFile.js'
-                                path.relative(
-                                    path.relative( // === sourceMap.sourceRoot === '../src'
-                                        path.join(configPaths.configBase, path.dirname(targetPath)),
-                                        this.entryFile.base
-                                    ),
-                                    path.relative(
-                                        path.join(configPaths.configBase, path.dirname(targetPath)),
-                                        '/src/nest/entryFile.js'
-                                    )
-                                )
-
-                            ]
-
-                        })
-                    );
-
-                });
-
                 it('should append "\n//# sourceMappingURL=" to bundleFile.contents', function () {
 
                     // given
@@ -600,16 +503,12 @@ describe('Bundler', function () {
                             sourceMap: '{"sources": []}',
                             source: ""
                         },
-                        configPaths = {
-                            configBase: '/jspm/root',
-                            jspmRoot: '/jspm/root'
-                        },
-
+                        
                         targetPath = this.bundleName,
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
+                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
@@ -629,16 +528,12 @@ describe('Bundler', function () {
                             sourceMap: '{"sources": []}',
                             source: ""
                         },
-                        configPaths = {
-                            configBase: '/jspm/root',
-                            jspmRoot: '/jspm/root'
-                        },
-
+                        
                         targetPath = this.bundleName,
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults, configPaths);
+                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
