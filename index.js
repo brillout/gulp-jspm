@@ -11,6 +11,15 @@ var path = require('path');
 var projectName = require('./package.json').name;
 
 
+jspm.on('log', function(type, msg) {
+    var logTypes = ['err', 'warn', 'ok', 'info', 'debug'];
+    if( logTypes.slice(0,2).indexOf(type) !== -1 ) {
+        console.error(projectName+':', msg);
+        return;
+    }
+    info_log(msg);
+});
+
 module.exports = function(opts){
 
     return through.obj(function(file, enc, cb){
@@ -47,6 +56,7 @@ module.exports = function(opts){
     });
 
 };
+
 
 function do_bundle(file, opts){
 
@@ -237,13 +247,11 @@ function get_paths(directory){
 }
 
 function info_log(message, infos) {
-    if( info_log.enable ) {
-        console.log(
-            projectName + ':',
-            message + ',',
-            'collected information at this point;\n',
-            infos
-            //JSON.stringify(infos, null, 2)
-        );
+    if( ! info_log.enable ) {
+        return;
+    }
+    console.log(projectName+':', message);
+    if( infos ) {
+        console.log('[[ collected information at this point;\n', infos, ']]');
     }
 }
