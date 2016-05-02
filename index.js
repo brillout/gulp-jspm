@@ -128,6 +128,7 @@ function do_bundle(file, opts){
                     delete jspm_opts.plugin;
                     delete jspm_opts.arithmetic;
                     delete jspm_opts.selfExecutingBundle;
+                    delete jspm_opts.verbose;
                     return jspm_opts;
         })();
 
