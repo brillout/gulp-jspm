@@ -9,7 +9,8 @@ var File = require('vinyl');
 var fs = Promise.promisifyAll(require("fs"));
 var path = require('path');
 var projectName = require('./package.json').name;
-
+var Builder = require('jspm').Builder;
+var builder = new Builder();
 
 jspm.on('log', function(type, msg) {
     var logTypes = ['err', 'warn', 'ok', 'info', 'debug'];
@@ -116,6 +117,7 @@ function do_bundle(file, opts){
                 if( opts.arithmetic ) {
                     jspm_input += ' ' + opts.arithmetic.trim();
                 }
+                jspm_input = jspm_input.replace(/\\/g, '/');
                 return jspm_input;
         })();
 
@@ -132,13 +134,11 @@ function do_bundle(file, opts){
                     return jspm_opts;
         })();
 
-        var method = opts.selfExecutingBundle?'bundleSFX':'bundle';
-
+        var method = opts.selfExecutingBundle?'buildStatic':'bundle';
+        
         info_log('calling `jspm.'+method+"('"+jspm_input+"','"+jspm_output+"',"+JSON.stringify(jspm_opts)+');`', infos);
 
-        return Promise.resolve(
-            jspm[method](jspm_input, jspm_output, jspm_opts)
-        )
+        return builder[method](jspm_input, jspm_output, jspm_opts)
         .then(function(){
             info_log('jspm.'+method+'() called', infos);
 
