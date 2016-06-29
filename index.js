@@ -116,6 +116,9 @@ function do_bundle(file, opts){
                 if( opts.arithmetic ) {
                     jspm_input += ' ' + opts.arithmetic.trim();
                 }
+                if ( path.sep === '\\' ) {
+                    jspm_input = jspm_input.replace(/\\/g, '/');
+                }
                 return jspm_input;
         })();
 
