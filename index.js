@@ -117,7 +117,13 @@ function do_bundle(file, opts){
                 if( opts.arithmetic ) {
                     jspm_input += ' ' + opts.arithmetic.trim();
                 }
-                jspm_input = jspm_input.replace(/\\/g, '/');
+
+                // SystemJS expects modules written as urls with / instead on \
+                // \ is a valid filename on unix so only do this for windows
+                if (path.sep === '\\') {
+                  jspm_input = jspm_input.replace(/\\/g, '/');
+                }
+
                 return jspm_input;
         })();
 
@@ -135,10 +141,10 @@ function do_bundle(file, opts){
         })();
 
         var method = opts.selfExecutingBundle?'buildStatic':'bundle';
-        
+
         info_log('calling `jspm.'+method+"('"+jspm_input+"','"+jspm_output+"',"+JSON.stringify(jspm_opts)+');`', infos);
 
-        return builder[method](jspm_input, jspm_output, jspm_opts)
+        return Promise.resolve(builder[method](jspm_input, jspm_output, jspm_opts))
         .then(function(){
             info_log('jspm.'+method+'() called', infos);
 
