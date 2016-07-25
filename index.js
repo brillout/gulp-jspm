@@ -182,11 +182,16 @@ function do_bundle(file, opts){
         var bundle_file = infos.bundle.vinyl_file =
             new File({
                 base: file.base ,
-                path: (function(){
-                    var basename = path.basename(file.path);
-                    basename = basename.split('.');
-                    basename.splice(1, 0, 'bundle');
-                    basename = basename.join('.');
+                path: (function nameFile(){
+                    var basename;
+                    if (opts.fileName && typeof opts.fileName === 'string') {
+                        basename = opts.fileName + '.js';
+                    } else {
+                        basename = path.basename(file.path);
+                        basename = basename.split('.');
+                        basename.splice(1, 0, 'bundle');
+                        basename = basename.join('.');
+                    }
                     return path.join(path.dirname(file.path), basename);
                 })() ,
                 contents: infos.bundle.contents

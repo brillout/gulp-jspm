@@ -68,6 +68,11 @@ gulp.src('src/main.js')
     .pipe(gulp_jspm({verbose: true}))
     .pipe(gulp.dest('build/'));
 
+// rename the bundled file
+gulp.src('src/main.js')
+    .pipe(gulp_jspm({fileName: 'other-name'})) // do not include file extension
+    .pipe(gulp.dest('build/'));
+
 // All other options given to gulp-jspm are passed on to jspm.
 // All jspm options can therefore be passed to `gulp-jspm`
 // (`minify`, `mangle`, `lowResSourceMaps`, etc.).
