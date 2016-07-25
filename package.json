@@ -1,6 +1,6 @@
 {
   "name": "gulp-jspm",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "description": "gulp plugin to build assets loaded with jspm/SystemJS",
   "main": "index.js",
   "dependencies": {
