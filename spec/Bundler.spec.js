@@ -421,7 +421,7 @@ describe('Bundler', function () {
 
     });
 
-    describe('._processSourceMap(entryFile, targetPath)', function () {
+    describe('._processWithSourceMap(entryFile, targetPath)', function () {
 
         it('should return a function', function () {
 
@@ -432,7 +432,7 @@ describe('Bundler', function () {
                 result;
 
             // when
-            result = bundler._processSourceMap(this.entryFile, targetPath);
+            result = bundler._processWithSourceMap(this.entryFile, targetPath);
 
             // then
             expect(typeof result).toBe('function');
@@ -456,7 +456,7 @@ describe('Bundler', function () {
                     result;
 
                 // when
-                result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
+                result = bundler._processWithSourceMap(this.entryFile, targetPath)(builderResults);
 
                 // then
                 expect(Array.isArray(result)).toBeTruthy();
@@ -481,7 +481,7 @@ describe('Bundler', function () {
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
+                    result = bundler._processWithSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
@@ -494,7 +494,7 @@ describe('Bundler', function () {
 
                 });
 
-                it('should append "\n//# sourceMappingURL=" to bundleFile.contents', function () {
+                it('should append "\\n//# sourceMappingURL=" to bundleFile.contents', function () {
 
                     // given
                     var bundler = new Bundler(),
@@ -508,7 +508,7 @@ describe('Bundler', function () {
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
+                    result = bundler._processWithSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
@@ -533,7 +533,7 @@ describe('Bundler', function () {
                         result;
 
                     // when
-                    result = bundler._processSourceMap(this.entryFile, targetPath)(builderResults);
+                    result = bundler._processWithSourceMap(this.entryFile, targetPath)(builderResults);
 
                     // then
                     expect(Array.isArray(result)).toBeTruthy();
@@ -579,12 +579,12 @@ describe('Bundler', function () {
                 return [Promise.resolve(builderResults), Promise.resolve(configPaths)]
             });
 
-            spyOn(bundler, '_processSourceMap').and.returnValue(function () {
+            spyOn(bundler, '_processWithSourceMap').and.returnValue(function () {
                 return Promise.resolve(bundleFiles)
             });
 
             // when
-            result = bundler.bundle(this.entryPath, targetPath);
+            result = bundler.bundle(this.entryPath, targetPath, { sourceMaps: true });
 
             // then
             result.then(function (_bundleFiles) {
@@ -620,12 +620,12 @@ describe('Bundler', function () {
                 return [Promise.resolve(builderResults), Promise.resolve(configPaths)]
             });
 
-            spyOn(bundler, '_processSourceMap').and.returnValue(function () {
+            spyOn(bundler, '_processWithSourceMap').and.returnValue(function () {
                 return Promise.resolve(bundleFiles)
             });
 
             // when
-            bundler.bundle(this.entryPath, targetPath);
+            bundler.bundle(this.entryPath, targetPath, { sourceMaps: true });
 
             // then
             expect(bundler._configureJspm).toHaveBeenCalledWith(this.entryFile);
@@ -651,7 +651,7 @@ describe('Bundler', function () {
 
                 targetPath = this.bundleName,
                 builderConfig = {
-
+                    sourceMaps: true
                 },
                 fileCache = [],
                 sfx = false;
@@ -664,7 +664,7 @@ describe('Bundler', function () {
                 return [Promise.resolve(builderResults), Promise.resolve(configPaths)]
             });
 
-            spyOn(bundler, '_processSourceMap').and.returnValue(function () {
+            spyOn(bundler, '_processWithSourceMap').and.returnValue(function () {
                 return Promise.resolve(bundleFiles)
             });
 
@@ -676,7 +676,7 @@ describe('Bundler', function () {
 
         });
 
-        it('should call ._processSourceMap with entryFile, targetPath', function () {
+        it('should call ._processWithSourceMap with entryFile, targetPath', function () {
 
             // given
             var bundler = new Bundler(),
@@ -702,15 +702,15 @@ describe('Bundler', function () {
                 return [Promise.resolve(builderResults), Promise.resolve(configPaths)]
             });
 
-            spyOn(bundler, '_processSourceMap').and.returnValue(function () {
+            spyOn(bundler, '_processWithSourceMap').and.returnValue(function () {
                 return Promise.resolve(bundleFiles)
             });
 
             // when
-            bundler.bundle(this.entryPath, targetPath);
+            bundler.bundle(this.entryPath, targetPath, { sourceMaps: true });
 
             // then
-            expect(bundler._processSourceMap).toHaveBeenCalledWith(this.entryFile, targetPath);
+            expect(bundler._processWithSourceMap).toHaveBeenCalledWith(this.entryFile, targetPath);
 
         });
 
