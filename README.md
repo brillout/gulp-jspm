@@ -1,3 +1,10 @@
+-
+
+# Currently unmaintained, see [issue #45 - Looking for a maintainer / fork](https://github.com/brillout/gulp-jspm/issues/45)
+
+<br />
+<br />
+
 `gulp-jspm` wraps the `jspm bundle moduleName` command line.
 
 ### Usage
