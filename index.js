@@ -1,15 +1,21 @@
+var projectName = require('./package.json').name;
+var temp = require('temp').track();
+var File = require('vinyl');
+var path = require('path');
 var gutil = require('gulp-util');
 var jspm = require('jspm');
 var Liftoff = require('liftoff');
 var through = require('through2');
 var Promise = require('bluebird');
-    Promise.longStackTraces();
-var temp = require('temp').track();
-var File = require('vinyl');
-var fs = Promise.promisifyAll(require("fs"));
-var path = require('path');
-var projectName = require('./package.json').name;
 
+try {
+    Promise.config({ longStackTraces: true });
+}
+catch (error) {
+    console.warn(projectName+':', 'Could not enable long stack traces.');
+}
+
+var fs = Promise.promisifyAll(require('fs'));
 
 jspm.on('log', function(type, msg) {
     var logTypes = ['err', 'warn', 'ok', 'info', 'debug'];
